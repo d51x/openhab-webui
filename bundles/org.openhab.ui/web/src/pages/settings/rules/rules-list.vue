@@ -178,6 +178,9 @@ export default {
     }
   },
   computed: {
+    type () {
+      return this.showScripts ? 'Scripts' : (this.showScenes ? 'Scenes' : 'Rules')
+    },
     indexedRules () {
       const filteredRules = this.filterRules()
       if (this.groupBy === 'alphabetical') {
