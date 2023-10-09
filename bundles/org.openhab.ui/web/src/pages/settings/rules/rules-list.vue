@@ -94,7 +94,7 @@
             </f7-button>
           </f7-segmented>
         </div>
-        <div class="block-title">
+        <div v-if="uniqueTags.length" class="block-title">
           Tags:
         </div>
         <div v-if="uniqueTags.length" class="block block-strong-ios block-outline-ios" ref="filterTags">
