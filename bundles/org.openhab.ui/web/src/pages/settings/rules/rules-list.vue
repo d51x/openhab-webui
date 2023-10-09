@@ -81,7 +81,7 @@
         <f7-block-title v-else class="searchbar-hide-on-search">
           {{ rules.length }} rules
         </f7-block-title>
-        <div class="searchbar-found padding-left padding-right">
+        <div v-if="rules.length" class="searchbar-found padding-left padding-right">
           <f7-segmented strong tag="p">
             <f7-button :active="groupBy === 'alphabetical'" @click="switchGroupOrder('alphabetical')">
               Alphabetical
@@ -97,7 +97,7 @@
         <div class="block-title">
           Tags:
         </div>
-        <div class="block block-strong-ios block-outline-ios" ref="filterTags">
+        <div v-if="uniqueTags.length" class="block block-strong-ios block-outline-ios" ref="filterTags">
           <f7-chip v-for="tag in uniqueTags" :key="tag" :text="tag" media-bg-color="blue"
                    :color="isTagSelected(tag) ? 'blue' : ''"
                    style="margin-right: 6px"
@@ -106,7 +106,7 @@
           </f7-chip>
         </div>
         <f7-list
-          v-show="rules.length > 0"
+          v-show="rules.length"
           class="searchbar-found col rules-list"
           ref="rulesList"
           media-list contacts-list>
