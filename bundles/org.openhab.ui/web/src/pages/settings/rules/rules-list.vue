@@ -234,6 +234,8 @@ export default {
           objEntries[key] = tagsRules[key]
           return objEntries
         }, {})
+      } else {
+        return this.rules
       }
     },
     searchPlaceholder () {
