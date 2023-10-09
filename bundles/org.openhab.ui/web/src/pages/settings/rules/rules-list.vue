@@ -81,7 +81,16 @@
         <f7-block-title v-else class="searchbar-hide-on-search">
           {{ rules.length }} rules
         </f7-block-title>
-
+        <div class="searchbar-found padding-left padding-right">
+          <f7-segmented strong tag="p">
+            <f7-button :active="groupBy === 'alphabetical'" @click="switchGroupOrder('alphabetical')">
+              Alphabetical
+            </f7-button>
+            <f7-button :active="groupBy === 'semantic'" @click="switchGroupOrder('semantic')">
+              By Semantic Tag
+            </f7-button>
+          </f7-segmented>
+        </div>
         <f7-list
           v-show="rules.length > 0"
           class="searchbar-found col rules-list"
@@ -131,9 +140,10 @@
 
 <script>
 import RuleStatus from '@/components/rule/rule-status-mixin'
+import TagMixin from '@/components/tags/tag-mixin'
 
 export default {
-  mixins: [RuleStatus],
+  mixins: [RuleStatus, TagMixin],
   props: ['showScripts', 'showScenes'],
   components: {
     'empty-state-placeholder': () => import('@/components/empty-state-placeholder.vue')
@@ -147,20 +157,40 @@ export default {
       initSearchbar: false,
       selectedItems: [],
       showCheckboxes: false,
+      groupBy: 'alphabetical',
       eventSource: null
     }
   },
   computed: {
     indexedRules () {
-      return this.rules.reduce((prev, rule, i, rules) => {
-        const initial = rule.name.substring(0, 1).toUpperCase()
-        if (!prev[initial]) {
-          prev[initial] = []
-        }
-        prev[initial].push(rule)
+      if (this.groupBy === 'alphabetical') {
+        return this.rules.reduce((prev, rule, i, rules) => {
+          const initial = rule.name.substring(0, 1).toUpperCase()
+          if (!prev[initial]) {
+            prev[initial] = []
+          }
+          prev[initial].push(rule)
 
-        return prev
-      }, {})
+          return prev
+        }, {})
+      } else if (this.groupBy === 'semantic') {
+        const semanticGroup = this.rules.reduce((prev, rule, i, rules) => {
+          let initial = rule.tags.filter((t) => t !== 'Script' && t !== 'Scene' &&
+            t !== 'Schedule' && this.isSemanticTag(t))
+          if (initial.length === 0) initial = '- No Semantic Tags -'
+
+          if (!prev[initial]) {
+            prev[initial] = []
+          }
+          prev[initial].push(rule)
+
+          return prev
+        }, {})
+        return Object.keys(semanticGroup).sort((a, b) => a.localeCompare(b)).reduce((objEntries, key) => {
+          objEntries[key] = semanticGroup[key]
+          return objEntries
+        }, {})
+      }
     },
     searchPlaceholder () {
       return window.innerWidth >= 1280 ? 'Search (for advanced search, use the developer sidebar (Shift+Alt+D))' : 'Search'
@@ -316,6 +346,18 @@ export default {
         this.load()
         console.error(err)
         this.$f7.dialog.alert('An error occurred while enabling/disabling: ' + err)
+      })
+    },
+    switchGroupOrder (groupBy) {
+      this.groupBy = groupBy
+      const searchbar = this.$refs.searchbar.$el.f7Searchbar
+      const filterQuery = searchbar.query
+      this.$nextTick(() => {
+        if (filterQuery) {
+          searchbar.clear()
+          searchbar.search(filterQuery)
+        }
+        if (groupBy === 'alphabetical') this.$refs.listIndex.update()
       })
     }
   }
