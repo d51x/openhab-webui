@@ -102,7 +102,7 @@
                    :color="isTagSelected(tag) ? 'blue' : ''"
                    style="margin-right: 6px"
                    @click="(e) => toggleSearchTag(e, tag)">
-            <f7-icon v-if="isTagSelected(tag)" slot="media" ios="f7:checkmark_circle_fill" md="material:check-circle" aurora="f7:checkmark_circle_fill" />
+            <f7-icon v-if="isTagSelected(tag)" slot="media" ios="f7:checkmark_circle_fill" md="material:check_circle" aurora="f7:checkmark_circle_fill" />
           </f7-chip>
         </div>
         <f7-list
