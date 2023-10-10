@@ -100,7 +100,7 @@
         <div v-if="uniqueTags.length" class="block block-strong-ios block-outline-ios" ref="filterTags">
           <f7-chip v-for="tag in uniqueTags" :key="tag" :text="tag" media-bg-color="blue"
                    :color="isTagSelected(tag) ? 'blue' : ''"
-                   style="margin-right: 6px"
+                   style="margin-right: 6px; cursor: pointer;"
                    @click="(e) => toggleSearchTag(e, tag)">
             <f7-icon v-if="isTagSelected(tag)" slot="media" ios="f7:checkmark_circle_fill" md="material:check_circle" aurora="f7:checkmark_circle_fill" />
           </f7-chip>
@@ -109,7 +109,7 @@
           v-show="rules.length"
           class="searchbar-found col rules-list"
           ref="rulesList"
-          media-list contacts-list>
+          media-list :contacts-list="groupBy === 'alphabetical'">
           <f7-list-group v-for="(rulesWithInitial, initial) in indexedRules" :key="initial">
             <f7-list-item v-if="rulesWithInitial.length" :title="initial" group-title />
             <f7-list-item
