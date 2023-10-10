@@ -239,6 +239,18 @@ export default {
           self.thing.channels.splice(idx, 1)
           self.$emit('channel-updated', true)
         })
+    },
+    getItemTypeAndMetaLabel (item) {
+      let ret = item.type
+      if (item.metadata && item.metadata.semantics) {
+        ret += ' · '
+        const classParts = item.metadata.semantics.value.split('_')
+        ret += classParts[0]
+        if (classParts.length > 1) {
+          ret += '>' + classParts.pop()
+        }
+      }
+      return ret
     }
   },
   watch: {
