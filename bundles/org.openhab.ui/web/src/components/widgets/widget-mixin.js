@@ -68,9 +68,9 @@ export default {
           if (key === 'visible' || key === 'visibleTo' || key === 'stylesheet') continue
           let value = sourceConfig[key]
           if (typeof value === 'string' && value.indexOf('subst.') !== -1) {
-            sourceConfig[key] = sourceConfig['subst'][value.split('.')[1]]
+            value = sourceConfig['subst'][value.split('.')[1]]
           }
-          this.$set(evalConfig, key, this.evaluateExpression(key, sourceConfig[key]))
+          this.$set(evalConfig, key, this.evaluateExpression(key, value))
         }
       }
       return evalConfig
@@ -212,11 +212,7 @@ export default {
           this.$set(this.widgetVars, varKey, this.context.vars[varKey])
         }
       }
-      // if (this.context.subst) {
-      //   for (const substKey in this.context.subst) {
-      //     this.$set(this.widgetSubst, substKey, this.context.subst[substKey])
-      //   }
-      // }
+
       if (this.context.component.slots) Object.assign(widget.slots, this.context.component.slots)
       const widgetContext = {
         component: widget,
