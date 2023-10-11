@@ -33,6 +33,7 @@ export default {
         store: this.$store.getters.trackedItems,
         props: this.props,
         vars: (this.page && this.page.config && this.page.config.defineVars) ? this.page.config.defineVars : {},
+        subst: (this.page && this.page.config && this.page.config.subst) ? this.page.config.subst : {},
         editmode: (!this.previewMode || this.forceEditMode) ? {
           addWidget: this.addWidget,
           configureWidget: this.configureWidget,

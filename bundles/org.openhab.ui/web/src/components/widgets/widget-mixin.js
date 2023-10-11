@@ -63,8 +63,13 @@ export default {
       const sourceConfig = this.context.component.config || (this.componentType.startsWith('oh-') ? this.context.modalConfig : {})
       if (sourceConfig) {
         if (typeof sourceConfig !== 'object') return {}
+
         for (const key in sourceConfig) {
           if (key === 'visible' || key === 'visibleTo' || key === 'stylesheet') continue
+          let value = sourceConfig[key]
+          if (typeof value === 'string' && value.indexOf('subst.') !== -1) {
+            sourceConfig[key] = sourceConfig['subst'][value.split('.')[1]]
+          }
           this.$set(evalConfig, key, this.evaluateExpression(key, sourceConfig[key]))
         }
       }
@@ -120,6 +125,7 @@ export default {
   },
   methods: {
     evaluateExpression (key, value, context) {
+
       if (value === null) return null
       const ctx = context || this.context
       if (typeof value === 'string' && value.startsWith('=')) {
@@ -129,6 +135,7 @@ export default {
           if (!this.exprAst[key] || ctx.editmode) {
             this.exprAst[key] = expr.parse(value.substring(1))
           }
+
           return expr.evaluate(this.exprAst[key], {
             items: ctx.store,
             props: this.props,
@@ -205,6 +212,11 @@ export default {
           this.$set(this.widgetVars, varKey, this.context.vars[varKey])
         }
       }
+      // if (this.context.subst) {
+      //   for (const substKey in this.context.subst) {
+      //     this.$set(this.widgetSubst, substKey, this.context.subst[substKey])
+      //   }
+      // }
       if (this.context.component.slots) Object.assign(widget.slots, this.context.component.slots)
       const widgetContext = {
         component: widget,
