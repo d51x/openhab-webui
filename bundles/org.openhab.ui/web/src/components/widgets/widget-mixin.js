@@ -68,7 +68,11 @@ export default {
           if (key === 'visible' || key === 'visibleTo' || key === 'stylesheet') continue
           let value = sourceConfig[key]
           if (typeof value === 'string' && value.indexOf('subst.') !== -1) {
-            value = sourceConfig['subst'][value.split('.')[1]]
+            Object.entries(sourceConfig['subst']).forEach((s, s2) => {
+              let subs = Array.from(s)
+              value = value.replaceAll('$subst.' + subs[0], subs[1])
+            })
+            // console.error('old value', sourceConfig[key], 'new value', value, 'for key', key)
           }
           this.$set(evalConfig, key, this.evaluateExpression(key, value))
         }
