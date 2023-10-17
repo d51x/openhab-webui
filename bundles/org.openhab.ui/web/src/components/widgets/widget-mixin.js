@@ -98,6 +98,18 @@ export default {
         return false
       }
       return true
+    },
+    func () {
+      if (!this.context || !this.context.component) return null
+      let evalFunc = {}
+      const sourceFunc = this.context.component.func || {}
+      if (sourceFunc) {
+        if (typeof sourceFunc !== 'object') return {}
+        for (const key in sourceFunc) {
+          this.$set(evalFunc, key, this.evaluateExpression(key, sourceFunc[key]))
+        }
+      }
+      return evalFunc
     }
   },
   mounted () {
@@ -133,6 +145,7 @@ export default {
             items: ctx.store,
             props: this.props,
             config: ctx.component.config,
+            func: ctx.component.func,
             vars: ctx.vars,
             loop: ctx.loop,
             Math: Math,
